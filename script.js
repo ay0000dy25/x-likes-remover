@@ -6,12 +6,11 @@
   let total = 0;
   let empty = 0;
   
-  // Rate limit detection
   const originalFetch = window.fetch;
   window.fetch = async (...args) => {
     const res = await originalFetch(...args);
     if (res.status === 429) {
-      console.warn('pausing 2 minutes...');
+      console.warn(' Rate limited - pausing 2 minutes...');
       await wait(120000);
     }
     return res;
@@ -28,25 +27,26 @@
       empty++;
       console.log(`No likes found (${empty}/5)`);
       window.scrollTo(0, document.body.scrollHeight);
-      await wait(3000);
+      await wait(2000);
       continue;
     }
 
     empty = 0;
-  
+    console.log(`Found ${buttons.length} likes`);
 
     for (let i = 0; i < Math.min(buttons.length, 10); i++) {
       buttons[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
-      await wait(800);
+      await wait(200);
       buttons[i].click();
       total++;
-     
-      await wait(2000);
+
+      await wait(500);
     }
 
-    await wait(5000);
+    await wait(1000);
     window.scrollTo(0, document.body.scrollHeight);
-    await wait(3000);
+    await wait(1500);
   }
 
+  console.log(`\n🎉 Done! Total removed: ${total}`);
 })();
